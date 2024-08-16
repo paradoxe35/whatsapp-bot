@@ -12,7 +12,7 @@ export class KeyVSchedulerStore implements SchedulerStore {
 
   constructor() {
     this.keyv = new Keyv({
-      store: new KeyvSqlite(`sqlite://${process.cwd()}/file/database.sqlite`),
+      store: new KeyvSqlite(`sqlite://${process.cwd()}/files/database.sqlite`),
     });
   }
 

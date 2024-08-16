@@ -35,28 +35,32 @@ export default class Application {
 
     const keyVStore = new KeyVSchedulerStore();
 
+    // Schedule text message to specified contact weekly
     const scheduler = new Scheduler(
       process.env.TIMEZONE || "Africa/Kigali",
       keyVStore
     );
 
-    chatContacts.map((chatContact) => {
-      scheduler.schedule(chatContact, (date) => {});
+    // Schedule the contacts
+    chatContacts.forEach((chatContact) => {
+      scheduler.schedule(chatContact, (date) => {
+        console.log("Scheduled....", date);
+      });
     });
 
-    // Run Cron
+    // Run Cron scheduler
     scheduler.cron();
   }
 
   initialize() {
     this.whatsappClient.on("qr", (qr) => {
-      // Print the qr code on the terminal
-      qrcode.generate(qr, { small: true });
-
       // Generate QR Code Image and  Save the QR Code Image (png format)
       qrimage
         .image(qr, { type: "png" })
-        .pipe(fs.createWriteStream("file/qrcode.png"));
+        .pipe(fs.createWriteStream("files/qrcode.png"));
+
+      // Print the qr code on the terminal
+      qrcode.generate(qr, { small: true });
     });
 
     this.whatsappClient.initialize();

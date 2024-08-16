@@ -40,7 +40,12 @@ export class Scheduler {
   }
 
   public cron() {
-    // Just make sure the only on execution run at a time
+    setTimeout(() => {
+      console.log("===== SCHEDULER START ======");
+      console.log(`===== ${this.scheduling.size} schedules founds ======\n`);
+    }, 1000);
+
+    // Just make sure the only one execution run at a time
     const cb = () => this.queue.task(this.cronExecutor);
 
     cron.schedule("* * * * *", cb, { timezone: this.TZ });
@@ -58,7 +63,11 @@ export class Scheduler {
 
     // ensures that the random day returned is within the next week
     // and is at least four days after the passed date.
-    const nextScheduleDate = getRandomDayOfNextWeek(lastDatetime);
+    let nextScheduleDate = getRandomDayOfNextWeek(lastDatetime);
+
+    if (nextScheduleDate < new Date()) {
+      nextScheduleDate = getRandomDayOfNextWeek(new Date());
+    }
 
     // Store the scheduled date in case of sys restart
     this.store.setScheduledChatDate(phone, nextScheduleDate);
@@ -86,6 +95,8 @@ export class Scheduler {
         this.plan(value.chatContact, value.datetime);
 
         value.callback(now);
+
+        console.log("schedule executed: ", value.chatContact.contact.phone);
       }
     }
   }
