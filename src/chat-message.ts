@@ -46,7 +46,7 @@ export class ChatMessage {
           4. Responding to Non-Greeting Messages: If the last message isn't a greeting, respond normally, taking into account the contact's character and always using a polite tone.
           5. Concise Responses: Your responses should be as brief as possible while still conveying the necessary information.
 
-          Contact Character Profile: {contact_character}
+          Contact Character Profile: {character}
 
           Date: {date}`,
       ],
