@@ -3,6 +3,7 @@ import qrcode from "qrcode-terminal";
 import { Scheduler } from "./src/scheduler";
 import { ContactsFactory } from "./src/contacts-factory";
 import { ChatContactsFactory } from "./src/chat-contacts-factory";
+import { KeyVSchedulerStore } from "./src/scheduler-store";
 
 export default class Application {
   private whatsappClient: Client;
@@ -30,7 +31,16 @@ export default class Application {
       throw new Error("Contacts empty or couldn't found the contacts file");
     }
 
-    const scheduler = new Scheduler(process.env.TIMEZONE || "Africa/Kigali");
+    const keyVStore = new KeyVSchedulerStore();
+
+    const scheduler = new Scheduler(
+      process.env.TIMEZONE || "Africa/Kigali",
+      keyVStore
+    );
+
+    chatContacts.map((chatContact) => {
+      scheduler.schedule(chatContact, (date) => {});
+    });
 
     // Run Cron
     scheduler.cron();
