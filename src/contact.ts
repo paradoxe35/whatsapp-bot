@@ -11,7 +11,9 @@ export class Contact {
   static fromJson(data: any) {
     const schema = z.object({
       name: z.string(),
-      phone: z.string().regex(new RegExp("^(?(d{3}))?[- ]?(d{3})[- ]?(d{4})$")),
+      phone: z
+        .string()
+        .regex(/^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/i),
       character: z.string().min(5),
       prompt: z.string().optional(),
     });

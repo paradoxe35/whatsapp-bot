@@ -3,7 +3,7 @@ import { Contact } from "./contact";
 
 export class ContactsFactory {
   static async create() {
-    const file = await fs.readFile("contacts.json");
+    const file = await fs.readFile("files/contacts.json");
     const json = JSON.parse(file.toString("utf8"));
 
     if (Array.isArray(json) === false) {
