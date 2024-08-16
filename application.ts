@@ -1,5 +1,7 @@
+import fs from "fs";
 import { Client, LocalAuth } from "whatsapp-web.js";
 import qrcode from "qrcode-terminal";
+import qrimage from "qr-image";
 import { Scheduler } from "./src/scheduler";
 import { ContactsFactory } from "./src/contacts-factory";
 import { ChatContactsFactory } from "./src/chat-contacts-factory";
@@ -48,7 +50,13 @@ export default class Application {
 
   initialize() {
     this.whatsappClient.on("qr", (qr) => {
+      // Print the qr code on the terminal
       qrcode.generate(qr, { small: true });
+
+      // Generate QR Code Image and  Save the QR Code Image (png format)
+      qrimage
+        .image(qr, { type: "png" })
+        .pipe(fs.createWriteStream("file/qrcode.png"));
     });
 
     this.whatsappClient.initialize();
