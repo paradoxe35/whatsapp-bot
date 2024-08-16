@@ -6,9 +6,13 @@ import { Scheduler } from "./src/scheduler";
 import { ContactsFactory } from "./src/contacts-factory";
 import { ChatContactsFactory } from "./src/chat-contacts-factory";
 import { KeyVSchedulerStore } from "./src/scheduler-store";
+import { ChatMessage } from "./src/chat-message";
+import type { ChatContact } from "./src/chat-contact";
+import { trimPhone } from "./utils/helpers";
 
 export default class Application {
   private whatsappClient: Client;
+  private chatMessage?: ChatMessage;
 
   constructor() {
     this.whatsappClient = new Client({
@@ -33,9 +37,12 @@ export default class Application {
       throw new Error("Contacts empty or couldn't found the contacts file");
     }
 
+    // Instantiate Chat Message
+    this.chatMessage = new ChatMessage();
+
     const keyVStore = new KeyVSchedulerStore();
 
-    // Schedule text message to specified contact weekly
+    // Schedule send messages to contacts json weekly
     const scheduler = new Scheduler(
       process.env.TIMEZONE || "Africa/Kigali",
       keyVStore
@@ -43,8 +50,11 @@ export default class Application {
 
     // Schedule the contacts
     chatContacts.forEach((chatContact) => {
+      // Listen to scheduled task execution
       scheduler.schedule(chatContact, (date) => {
-        console.log("Scheduled....", date);
+        this.sendGreetings(chatContact, date);
+
+        console.log("Scheduled chat contact Executed....", date);
       });
     });
 
@@ -52,7 +62,20 @@ export default class Application {
     scheduler.cron();
   }
 
-  initialize() {
+  // [app domain func]
+  private sendGreetings(chatContact: ChatContact, date: Date) {
+    const contact = chatContact.contact;
+    const phone = trimPhone(contact.phone);
+
+    this.chatMessage?.invoke({
+      sessionId: phone,
+      character: contact.character,
+      input: "greeting",
+      date: date,
+    });
+  }
+
+  public initialize() {
     this.whatsappClient.on("qr", (qr) => {
       // Generate QR Code Image and  Save the QR Code Image (png format)
       qrimage
