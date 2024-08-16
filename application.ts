@@ -41,7 +41,6 @@ export default class Application {
     this.chatMessage = new ChatMessage();
 
     const keyVStore = new KeyVSchedulerStore();
-
     // Schedule send messages to contacts json weekly
     const scheduler = new Scheduler(
       process.env.TIMEZONE || "Africa/Kigali",
@@ -52,9 +51,25 @@ export default class Application {
     chatContacts.forEach((chatContact) => {
       // Listen to scheduled task execution
       scheduler.schedule(chatContact, (date) => {
-        this.sendGreetings(chatContact, date);
+        this.sendGreetingMessage(chatContact, date);
 
         console.log("Scheduled chat contact Executed....", date);
+      });
+    });
+
+    // Listen on incoming messages in of auto replay
+    this.whatsappClient.on("message_create", async (message) => {
+      const wContact = await message.getContact();
+
+      // Loop over the working contacts and check message is who from, then reply
+      chatContacts.forEach(async (c) => {
+        if (
+          c.contact.name === wContact.name &&
+          trimPhone(c.contact.phone) === trimPhone(wContact.number) &&
+          c.contact.autoReply
+        ) {
+          this.sendReplyMessage(c, message.body);
+        }
       });
     });
 
@@ -63,16 +78,32 @@ export default class Application {
   }
 
   // [app domain func]
-  private sendGreetings(chatContact: ChatContact, date: Date) {
+  private async sendReplyMessage(chatContact: ChatContact, message: string) {
     const contact = chatContact.contact;
     const phone = trimPhone(contact.phone);
 
-    this.chatMessage?.invoke({
+    const reply = await this.chatMessage!.invoke({
+      sessionId: phone,
+      character: contact.character,
+      input: message,
+    });
+
+    chatContact.chat.sendMessage(reply);
+  }
+
+  // [app domain func]
+  private async sendGreetingMessage(chatContact: ChatContact, date: Date) {
+    const contact = chatContact.contact;
+    const phone = trimPhone(contact.phone);
+
+    const message = await this.chatMessage!.invoke({
       sessionId: phone,
       character: contact.character,
       input: "greeting",
       date: date,
     });
+
+    chatContact.chat.sendMessage(message);
   }
 
   public initialize() {
