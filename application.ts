@@ -107,6 +107,10 @@ export default class Application {
   }
 
   public initialize() {
+    this.whatsappClient.on("auth_failure", (err) => {
+      throw new Error(err);
+    });
+
     this.whatsappClient.on("qr", (qr) => {
       // Generate QR Code Image and  Save the QR Code Image (png format)
       qrimage
