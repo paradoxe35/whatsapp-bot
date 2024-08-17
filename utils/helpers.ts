@@ -45,3 +45,23 @@ export function getRandomDayOfNextWeek(date: Date) {
 
   return randomDay;
 }
+
+export function getNextDayWithRandomMorningTime(date: Date) {
+  // Ensure the input date is a Date object
+  const inputDate = new Date(date);
+
+  // Calculate the next day
+  const nextDay = new Date(inputDate);
+  nextDay.setDate(inputDate.getDate() + 1);
+
+  // Set a random time between 8:00 AM and 11:59 AM
+  const randomHours = 8 + Math.floor(Math.random() * 4); // Random hour: 8, 9, 10, or 11 AM
+  const randomMinutes = Math.floor(Math.random() * 60); // Random minute: 0 to 59
+
+  nextDay.setHours(randomHours);
+  nextDay.setMinutes(randomMinutes);
+  nextDay.setSeconds(0);
+  nextDay.setMilliseconds(0);
+
+  return nextDay;
+}

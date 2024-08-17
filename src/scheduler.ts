@@ -1,7 +1,11 @@
 import cron from "node-cron";
 import type { ChatContact } from "./chat-contact";
 import type { SchedulerStore } from "./scheduler-store";
-import { getRandomDayOfNextWeek, trimPhone } from "../utils/helpers";
+import {
+  getNextDayWithRandomMorningTime,
+  getRandomDayOfNextWeek,
+  trimPhone,
+} from "../utils/helpers";
 import { Queue } from "../utils/queue";
 
 type Scheduling = {
@@ -13,6 +17,7 @@ type Scheduling = {
 export class Scheduler {
   private queue: Queue;
   private scheduling: Map<string, Scheduling> = new Map();
+  private cronCalled = false;
 
   constructor(private TZ: string, private store: SchedulerStore) {
     this.queue = new Queue(1);
@@ -40,6 +45,12 @@ export class Scheduler {
   }
 
   public cron() {
+    if (this.cronCalled) {
+      return;
+    }
+
+    this.cronCalled = true;
+
     setTimeout(() => {
       console.log("===== SCHEDULER START ======");
       console.log(`===== ${this.scheduling.size} schedules founds ======\n`);
@@ -51,7 +62,7 @@ export class Scheduler {
     cron.schedule("* * * * *", cb, { timezone: this.TZ });
   }
 
-  private async plan(
+  public async plan(
     chatContact: ChatContact,
     lastDatetime?: Date | null
   ): Promise<Date> {
@@ -63,10 +74,10 @@ export class Scheduler {
 
     // ensures that the random day returned is within the next week
     // and is at least four days after the passed date.
-    let nextScheduleDate = getRandomDayOfNextWeek(lastDatetime);
+    let nextScheduleDate = this.getNextScheduleDate(chatContact, lastDatetime);
 
     if (nextScheduleDate < new Date()) {
-      nextScheduleDate = getRandomDayOfNextWeek(new Date());
+      nextScheduleDate = this.getNextScheduleDate(chatContact, new Date());
     }
 
     // Store the scheduled date in case of sys restart
@@ -83,6 +94,16 @@ export class Scheduler {
     }
 
     return nextScheduleDate;
+  }
+
+  private getNextScheduleDate(chatContact: ChatContact, lastDatetime: Date) {
+    switch (chatContact.contact.schedule) {
+      case "daily":
+        return getNextDayWithRandomMorningTime(lastDatetime);
+
+      default: // Default to weekly
+        return getRandomDayOfNextWeek(lastDatetime);
+    }
   }
 
   private cronExecutor() {

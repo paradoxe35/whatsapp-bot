@@ -54,7 +54,7 @@ export default class Application {
       keyVStore
     );
 
-    // Schedule the contacts
+    // Schedule the sendGreetingMessage to the contacts
     chatContacts.forEach((chatContact) => {
       // Listen to scheduled task execution
       scheduler.schedule(chatContact, (date) => {
@@ -68,14 +68,17 @@ export default class Application {
     this.whatsappClient.on("message_create", async (message) => {
       const wContact = await message.getContact();
 
-      // Loop over the working contacts and check message is who from, then reply
-      chatContacts.forEach(async (c) => {
+      chatContacts.forEach(async (chatContact) => {
         if (
-          c.contact.name === wContact.name &&
-          trimPhone(c.contact.phone) === trimPhone(wContact.number) &&
-          c.contact.autoReply
+          trimPhone(chatContact.contact.phone) === trimPhone(wContact.number)
         ) {
-          this.sendReplyMessage(c, message.body);
+          // if has the autoReplay Enable, then reply
+          if (chatContact.contact.autoReply) {
+            this.sendReplyMessage(chatContact, message.body);
+          }
+
+          // Reschedule the greeting date
+          scheduler.plan(chatContact);
         }
       });
     });
