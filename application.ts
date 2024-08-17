@@ -10,12 +10,16 @@ import { ChatMessage } from "./src/chat-message";
 import type { ChatContact } from "./src/chat-contact";
 import { trimPhone } from "./utils/helpers";
 import { sendAlert } from "./utils/telegram";
+import type { Contact } from "./src/contact";
 
 export default class Application {
   private whatsappClient: Client;
   private chatMessage?: ChatMessage;
+  private contacts: Contact[] = [];
 
   constructor() {
+    this.contacts = ContactsFactory.create();
+
     this.whatsappClient = new Client({
       authStrategy: new LocalAuth(),
       puppeteer: {
@@ -31,11 +35,10 @@ export default class Application {
   }
 
   private async ready() {
-    const contacts = await ContactsFactory.create();
     const chats = await this.whatsappClient.getChats();
 
     // Get contacts and chats that correspond to the contacts in json file
-    const chatContacts = await ChatContactsFactory.create(chats, contacts);
+    const chatContacts = await ChatContactsFactory.create(chats, this.contacts);
 
     if (!chatContacts.length) {
       throw new Error("Contacts empty or couldn't found the contacts file");

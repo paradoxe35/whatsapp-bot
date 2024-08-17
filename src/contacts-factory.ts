@@ -1,9 +1,13 @@
-import fs from "fs/promises";
+import fs from "fs";
 import { Contact } from "./contact";
 
 export class ContactsFactory {
-  static async create() {
-    const file = await fs.readFile("files/contacts.json");
+  /**
+   * Read contacts from file synchronously
+   * @returns
+   */
+  static create() {
+    const file = fs.readFileSync("files/contacts.json");
     const json = JSON.parse(file.toString("utf8"));
 
     if (Array.isArray(json) === false) {
