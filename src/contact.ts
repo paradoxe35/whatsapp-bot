@@ -19,7 +19,7 @@ export class Contact {
       character: z.string().min(5),
       prompt: z.string().optional(),
       autoReply: z.boolean().optional(),
-      schedule: z.enum(["weekly", "daily", "monthly"]).default("weekly"),
+      schedule: z.enum(["weekly", "daily"]).default("weekly"),
     });
 
     const value = schema.parse(data);
