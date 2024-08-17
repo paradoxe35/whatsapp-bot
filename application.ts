@@ -9,6 +9,7 @@ import { KeyVSchedulerStore } from "./src/scheduler-store";
 import { ChatMessage } from "./src/chat-message";
 import type { ChatContact } from "./src/chat-contact";
 import { trimPhone } from "./utils/helpers";
+import { sendAlert } from "./utils/telegram";
 
 export default class Application {
   private whatsappClient: Client;
@@ -108,7 +109,8 @@ export default class Application {
 
   public initialize() {
     this.whatsappClient.on("auth_failure", (err) => {
-      throw new Error(err);
+      // Telegram alert
+      sendAlert(`auth_failure: ${err}`);
     });
 
     this.whatsappClient.on("qr", (qr) => {
@@ -116,6 +118,9 @@ export default class Application {
       qrimage
         .image(qr, { type: "png" })
         .pipe(fs.createWriteStream("files/qrcode.png"));
+
+      // Send to telegram Notification
+      sendAlert(`QR Code Scan request: ${qr}`);
 
       // Print the qr code on the terminal
       qrcode.generate(qr, { small: true });
