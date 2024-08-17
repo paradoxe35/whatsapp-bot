@@ -14,7 +14,7 @@ type Scheduling = {
   datetime: Date;
 };
 
-export class Scheduler {
+export class ChatScheduler {
   private queue: Queue;
   private scheduling: Map<string, Scheduling> = new Map();
   private cronCalled = false;

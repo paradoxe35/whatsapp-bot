@@ -2,7 +2,7 @@ import fs from "fs";
 import { Client, LocalAuth } from "whatsapp-web.js";
 import qrcode from "qrcode-terminal";
 import qrimage from "qr-image";
-import { Scheduler } from "./src/scheduler";
+import { ChatScheduler } from "./src/scheduler";
 import { ContactsFactory } from "./src/contacts-factory";
 import { ChatContactsFactory } from "./src/chat-contacts-factory";
 import { KeyVSchedulerStore } from "./src/scheduler-store";
@@ -49,7 +49,7 @@ export default class Application {
 
     const keyVStore = new KeyVSchedulerStore();
     // Schedule send messages to contacts json weekly
-    const scheduler = new Scheduler(
+    const scheduler = new ChatScheduler(
       process.env.TIMEZONE || "Africa/Kigali",
       keyVStore
     );
