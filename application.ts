@@ -18,6 +18,9 @@ export default class Application {
   constructor() {
     this.whatsappClient = new Client({
       authStrategy: new LocalAuth(),
+      puppeteer: {
+        args: ["--no-sandbox", "--disable-setuid-sandbox"],
+      },
     });
 
     this.whatsappClient.on("ready", async () => {
