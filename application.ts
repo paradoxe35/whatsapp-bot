@@ -61,7 +61,7 @@ export default class Application {
       });
     });
 
-    // Listen on incoming messages in of auto replay
+    // Listen on incoming messages in case of auto reply
     this.whatsappClient.on("message_create", async (message) => {
       const wContact = await message.getContact();
 
