@@ -65,7 +65,7 @@ export default class Application {
     });
 
     // Listen on incoming messages in case of auto reply
-    this.whatsappClient.on("message_create", async (message) => {
+    this.whatsappClient.on("message", async (message) => {
       const wContact = await message.getContact();
 
       chatContacts.forEach(async (chatContact) => {
