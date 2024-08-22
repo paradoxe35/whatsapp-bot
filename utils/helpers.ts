@@ -65,3 +65,23 @@ export function getNextDayWithRandomMorningTime(date: Date) {
 
   return nextDay;
 }
+
+export function getDateAfterFourDaysWithRandomMorningTime(date: Date) {
+  // Ensure the input date is a Date object
+  const inputDate = new Date(date);
+
+  // Calculate the date four days later
+  const fourthDay = new Date(inputDate);
+  fourthDay.setDate(inputDate.getDate() + 4);
+
+  // Set a random time between 8:00 AM and 11:59 AM
+  const randomHours = 8 + Math.floor(Math.random() * 4); // Random hour: 8, 9, 10, or 11 AM
+  const randomMinutes = Math.floor(Math.random() * 60); // Random minute: 0 to 59
+
+  fourthDay.setHours(randomHours);
+  fourthDay.setMinutes(randomMinutes);
+  fourthDay.setSeconds(0);
+  fourthDay.setMilliseconds(0);
+
+  return fourthDay;
+}

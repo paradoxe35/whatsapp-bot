@@ -5,7 +5,7 @@ export class Contact {
     public readonly name: string,
     public readonly phone: string,
     public readonly character: string,
-    public readonly schedule: "weekly" | "daily" | "monthly",
+    public readonly schedule: "weekly" | "daily" | "+four",
     public readonly prompt?: string,
     public readonly autoReply?: boolean
   ) {}
@@ -19,7 +19,7 @@ export class Contact {
       character: z.string().min(5),
       prompt: z.string().optional(),
       autoReply: z.boolean().optional(),
-      schedule: z.enum(["weekly", "daily"]).default("weekly"),
+      schedule: z.enum(["weekly", "daily", "+four"]).default("weekly"),
     });
 
     const value = schema.parse(data);

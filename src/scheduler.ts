@@ -2,6 +2,7 @@ import cron from "node-cron";
 import type { ChatContact } from "./chat-contact";
 import type { SchedulerStore } from "./scheduler-store";
 import {
+  getDateAfterFourDaysWithRandomMorningTime,
   getNextDayWithRandomMorningTime,
   getRandomDayOfNextWeek,
   trimPhone,
@@ -100,6 +101,9 @@ export class ChatScheduler {
     switch (chatContact.contact.schedule) {
       case "daily":
         return getNextDayWithRandomMorningTime(lastDatetime);
+
+      case "+four":
+        return getDateAfterFourDaysWithRandomMorningTime(lastDatetime);
 
       default: // Default to weekly
         return getRandomDayOfNextWeek(lastDatetime);
