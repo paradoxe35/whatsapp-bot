@@ -122,7 +122,8 @@ export default class Application {
       sendAlert(`auth_failure: ${err}`);
     });
 
-    this.whatsappClient.on("qr", (qr) => {
+    let pairingCodeRequested = false;
+    this.whatsappClient.on("qr", async (qr) => {
       // Generate QR Code Image and  Save the QR Code Image (png format)
       qrImage
         .image(qr, { type: "png" })
@@ -133,6 +134,19 @@ export default class Application {
 
       // Print the qr code on the terminal
       qrCode.generate(qr, { small: true });
+
+      // Pairing code
+      const pairingCodeEnabled = false;
+      const myPhoneNumber = process.env.MY_PHONE_NUMBER;
+
+      if (pairingCodeEnabled && !pairingCodeRequested && myPhoneNumber) {
+        const pairingCode = await this.whatsappClient.requestPairingCode(
+          myPhoneNumber
+        );
+
+        console.log("Pairing code enabled, code: " + pairingCode);
+        pairingCodeRequested = true;
+      }
     });
 
     this.whatsappClient.initialize();
