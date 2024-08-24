@@ -83,6 +83,13 @@ export default class Application {
       });
     });
 
+    // Ping Pong
+    this.whatsappClient.on("message_create", (msg) => {
+      if (msg.body == "!ping") {
+        msg.reply("pong");
+      }
+    });
+
     // Run Cron scheduler
     scheduler.cron();
   }
