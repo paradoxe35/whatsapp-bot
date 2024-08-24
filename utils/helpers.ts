@@ -6,6 +6,23 @@ export function trimPhone(phone: string) {
   return phone.replace(/\s/, "");
 }
 
+/**
+ * Set a random time between 8:00 AM and 11:59 AM
+ * @param date
+ * @returns
+ */
+function randomizeTime(date: Date) {
+  const randomHours = 8 + Math.floor(Math.random() * 4); // Random hour: 8, 9, 10, or 11 AM
+  const randomMinutes = Math.floor(Math.random() * 60); // Random minute: 0 to 59
+
+  date.setHours(randomHours);
+  date.setMinutes(randomMinutes);
+  date.setSeconds(0);
+  date.setMilliseconds(0);
+
+  return date;
+}
+
 export function getRandomDayOfNextWeek(date: Date) {
   // Ensure the input date is a Date object
   const inputDate = new Date(date);
@@ -34,16 +51,7 @@ export function getRandomDayOfNextWeek(date: Date) {
 
   randomDay.setDate(startOfNextWeek.getDate() + randomOffset);
 
-  // Set a random time between 10 AM and 12 PM
-  const randomHours = 9 + Math.floor(Math.random() * 3); // Random hour: 9, 10, or 11 AM
-  const randomMinutes = Math.floor(Math.random() * 60); // Random minute: 0 to 59
-
-  randomDay.setHours(randomHours);
-  randomDay.setMinutes(randomMinutes);
-  randomDay.setSeconds(0);
-  randomDay.setMilliseconds(0);
-
-  return randomDay;
+  return randomizeTime(randomDay);
 }
 
 export function getNextDayWithRandomMorningTime(date: Date) {
@@ -54,16 +62,7 @@ export function getNextDayWithRandomMorningTime(date: Date) {
   const nextDay = new Date(inputDate);
   nextDay.setDate(inputDate.getDate() + 1);
 
-  // Set a random time between 8:00 AM and 11:59 AM
-  const randomHours = 8 + Math.floor(Math.random() * 4); // Random hour: 8, 9, 10, or 11 AM
-  const randomMinutes = Math.floor(Math.random() * 60); // Random minute: 0 to 59
-
-  nextDay.setHours(randomHours);
-  nextDay.setMinutes(randomMinutes);
-  nextDay.setSeconds(0);
-  nextDay.setMilliseconds(0);
-
-  return nextDay;
+  return randomizeTime(nextDay);
 }
 
 export function getDateAfterFourDaysWithRandomMorningTime(date: Date) {
@@ -74,14 +73,5 @@ export function getDateAfterFourDaysWithRandomMorningTime(date: Date) {
   const fourthDay = new Date(inputDate);
   fourthDay.setDate(inputDate.getDate() + 4);
 
-  // Set a random time between 8:00 AM and 11:59 AM
-  const randomHours = 8 + Math.floor(Math.random() * 4); // Random hour: 8, 9, 10, or 11 AM
-  const randomMinutes = Math.floor(Math.random() * 60); // Random minute: 0 to 59
-
-  fourthDay.setHours(randomHours);
-  fourthDay.setMinutes(randomMinutes);
-  fourthDay.setSeconds(0);
-  fourthDay.setMilliseconds(0);
-
-  return fourthDay;
+  return randomizeTime(fourthDay);
 }

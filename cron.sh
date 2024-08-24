@@ -1,3 +1,4 @@
 sudo crontab -e
 
-0 5 * * * TZ=Africa/Kigali /bin/systemctl restart whatsapp-bot.service
+# In Africa/Kigali it's 7AM 30
+30 5 * * * TZ=UTC /bin/systemctl restart whatsapp-bot.service
