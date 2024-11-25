@@ -53,11 +53,11 @@ export default class Application {
       keyVStore
     );
 
-    // Schedule the sendGreetingMessage to the contacts
+    // Schedule the send Greeting Message to the contacts
     chatContacts.forEach((chatContact) => {
       // Listen to scheduled task execution
       scheduler.schedule(chatContact, (date) => {
-        this.sendGreetingMessage(chatContact, date);
+        this._sendGreetingMessage(chatContact, date);
 
         console.log("Scheduled chat contact Executed....", date);
       });
@@ -73,7 +73,7 @@ export default class Application {
         ) {
           // if has the autoReplay Enable, then reply
           if (chatContact.contact.autoReply) {
-            this.sendReplyMessage(chatContact, message.body);
+            this._sendReplyMessage(chatContact, message.body);
           }
 
           // Reschedule the greeting date
@@ -99,7 +99,7 @@ export default class Application {
   }
 
   // [app domain func]
-  private async sendReplyMessage(chatContact: ChatContact, message: string) {
+  private async _sendReplyMessage(chatContact: ChatContact, message: string) {
     const contact = chatContact.contact;
     const phone = trimPhone(contact.phone);
 
@@ -113,7 +113,7 @@ export default class Application {
   }
 
   // [app domain func]
-  private async sendGreetingMessage(chatContact: ChatContact, date: Date) {
+  private async _sendGreetingMessage(chatContact: ChatContact, date: Date) {
     const contact = chatContact.contact;
     const phone = trimPhone(contact.phone);
 
