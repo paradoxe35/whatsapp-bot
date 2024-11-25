@@ -8,6 +8,8 @@ export class ChatContactsFactory {
     const newChats: ChatContact[] = [];
 
     for (const chat of chats) {
+      if (chat.isGroup) continue;
+
       // To limit getContact request calls, filter only contact that are similar
       const contact = contacts.find((contact) => {
         return (

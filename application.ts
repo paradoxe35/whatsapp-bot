@@ -29,12 +29,11 @@ export default class Application {
 
     this.whatsappClient.on("ready", async () => {
       console.log("Client Ready!");
-
-      this.ready();
+      this._ready();
     });
   }
 
-  private async ready() {
+  private async _ready() {
     const chats = await this.whatsappClient.getChats();
 
     // Get contacts and chats that correspond to the contacts in json file
@@ -91,7 +90,12 @@ export default class Application {
     });
 
     // Run Cron scheduler
-    scheduler.cron();
+    const task = scheduler.cron();
+
+    if (task?.stop) {
+      process.on("SIGINT", task?.stop);
+      process.on("SIGTERM", task?.stop);
+    }
   }
 
   // [app domain func]

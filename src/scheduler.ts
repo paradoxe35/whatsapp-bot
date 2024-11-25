@@ -60,7 +60,7 @@ export class ChatScheduler {
     // Just make sure the only one execution run at a time
     const cb = () => this.queue.task(this.cronExecutor);
 
-    cron.schedule("* * * * *", cb, { timezone: this.TZ });
+    return cron.schedule("* * * * *", cb, { timezone: this.TZ });
   }
 
   public async plan(
